@@ -1,6 +1,7 @@
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
-import type { ApiResponse } from 'shared/dist'
+import type { ApiResponse } from 'shared'
+import routes from './routes'
 
 const app = new Hono()
 
@@ -11,13 +12,15 @@ app.get('/', (c) => {
 })
 
 app.get('/hello', async (c) => {
-
   const data: ApiResponse = {
-    message: "Hello BHVR!",
-    success: true
+    data: null,
+    message: 'Hello BHVR!',
+    success: true,
   }
 
   return c.json(data, { status: 200 })
 })
+
+app.route('/api', routes)
 
 export default app

@@ -1,51 +1,102 @@
-import { useState } from 'react'
-import beaver from './assets/beaver.svg'
-import type { ApiResponse } from 'shared'
-import './App.css'
+import { useState, useEffect } from "react"
+import { Routes, Route, Link } from "react-router-dom"
+import { TodoList } from "./components/TodoList"
+import { TodoForm } from "./components/TodoForm"
+import { api } from "./lib/axios"
+import type { Todo, CreateTodoInput, CreateTodoFormInput } from "shared"
 
-const SERVER_URL = import.meta.env.VITE_SERVER_URL || "http://localhost:3000"
+export default function App() {
+  const [todos, setTodos] = useState<Todo[]>([])
+  const [isLoading, setIsLoading] = useState(true)
 
-function App() {
-  const [data, setData] = useState<ApiResponse | undefined>()
-
-  async function sendRequest() {
+  // Fetch todos dari API
+  const fetchTodos = async (): Promise<void> => {
     try {
-      const req = await fetch(`${SERVER_URL}/hello`)
-      const res: ApiResponse = await req.json()
-      setData(res)
+      setIsLoading(true)
+      const response = await api.get("/todos")
+      if (response.data.success) {
+        setTodos(response.data.data || [])
+      }
     } catch (error) {
-      console.log(error)
+      console.error("Error fetching todos:", error)
+    } finally {
+      setIsLoading(false)
     }
   }
 
+  // Create todo
+  const handleCreateTodo = async (data: CreateTodoFormInput): Promise<void> => {
+    try {
+      const response = await api.post("/todos", data)
+      if (response.data.success) {
+        await fetchTodos() // Refresh todos list
+      }
+    } catch (error) {
+      console.error("Error creating todo:", error)
+      throw error
+    }
+  }
+
+  // Update todo
+  const handleUpdateTodo = async (id: string, data: Partial<Todo>): Promise<void> => {
+    try {
+      const response = await api.put(`/todos/${id}`, data)
+      if (response.data.success) {
+        await fetchTodos() // Refresh todos list
+      }
+    } catch (error) {
+      console.error("Error updating todo:", error)
+      throw error
+    }
+  }
+
+  // Delete todo
+  const handleDeleteTodo = async (id: string): Promise<void> => {
+    try {
+      const response = await api.delete(`/todos/${id}`)
+      if (response.data.success) {
+        await fetchTodos() // Refresh todos list
+      }
+    } catch (error) {
+      console.error("Error deleting todo:", error)
+      throw error
+    }
+  }
+
+  // Load todos saat component mount
+  useEffect(() => {
+    fetchTodos()
+  }, [])
+
   return (
-    <>
-      <div>
-        <a href="https://github.com/stevedylandev/bhvr" target="_blank">
-          <img src={beaver} className="logo" alt="beaver logo" />
-        </a>
-      </div>
-      <h1>bhvr</h1>
-      <h2>Bun + Hono + Vite + React</h2>
-      <p>A typesafe fullstack monorepo</p>
-      <div className="card">
-        <div className='button-container'>
-          <button onClick={sendRequest}>
-            Call API
-          </button>
-          <a className='docs-link' target='_blank' href="https://bhvr.dev">Docs</a>
-        </div>
-        {data && (
-          <pre className='response'>
-            <code>
-            Message: {data.message} <br />
-            Success: {data.success.toString()}
-            </code>
-          </pre>
-        )}
-      </div>
-    </>
+    <div className="p-4">
+      <nav className="flex gap-4 mb-4">
+        <Link to="/">Home</Link>
+        <Link to="/add">Add Todo</Link>
+      </nav>
+
+      <Routes>
+        <Route 
+          path="/" 
+          element={
+            <TodoList 
+              todos={todos}
+              isLoading={isLoading}
+              onCreateTodo={handleCreateTodo}
+              onUpdateTodo={handleUpdateTodo}
+              onDeleteTodo={handleDeleteTodo}
+            />
+          } 
+        />
+        <Route 
+          path="/add" 
+          element={
+            <TodoForm 
+              onSubmit={handleCreateTodo}
+            />
+          } 
+        />
+      </Routes>
+    </div>
   )
 }
-
-export default App

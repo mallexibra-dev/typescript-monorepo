@@ -1,0 +1,142 @@
+---
+alwaysApply: true
+description: Aturan untuk menggunakan shadcn UI dan Zod validation
+---
+
+# Aturan shadcn UI dan Zod Validation
+
+## Komponen UI - Gunakan shadcn UI
+
+**WAJIB menggunakan shadcn UI untuk semua komponen UI:**
+
+- Gunakan komponen shadcn yang sudah tersedia di `client/src/components/ui/`
+- Jangan membuat komponen UI custom dari awal jika sudah ada di shadcn
+- Untuk styling, gunakan Tailwind CSS classes yang konsisten dengan shadcn
+- Import komponen shadcn dengan format: `import { ComponentName } from "@/components/ui/component-name"`
+
+### Komponen shadcn yang tersedia:
+- Button, Input, Label, Textarea
+- Card, Dialog, Sheet, Popover
+- Form, Select, Checkbox, RadioGroup
+- Table, Badge, Avatar, Separator
+- Toast, Alert, Progress, Skeleton
+- Dan komponen lainnya sesuai kebutuhan
+
+### Contoh penggunaan:
+```tsx
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+
+export function MyComponent() {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Judul</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <Input placeholder="Masukkan data" />
+        <Button>Submit</Button>
+      </CardContent>
+    </Card>
+  )
+}
+```
+
+## Validasi - Gunakan Zod
+
+**WAJIB menggunakan Zod untuk semua validasi:**
+
+### Frontend (React):
+- Gunakan Zod untuk validasi form dengan react-hook-form
+- Buat schema Zod untuk setiap form
+- Gunakan `zodResolver` dengan react-hook-form
+- Import Zod dengan: `import { z } from "zod"`
+
+### Backend (Hono):
+- Gunakan Zod untuk validasi request body, query params, dan response
+- Buat schema Zod untuk setiap endpoint
+- Validasi input sebelum memproses di controller
+- Import Zod dengan: `import { z } from "zod"`
+
+### Contoh implementasi:
+
+#### Schema Zod:
+```typescript
+import { z } from "zod"
+
+export const todoSchema = z.object({
+  title: z.string().min(1, "Judul harus diisi").max(100, "Judul terlalu panjang"),
+  description: z.string().optional(),
+  status: z.enum(["TODO", "IN_PROGRESS", "DONE", "BLOCKED"]),
+  priority: z.enum(["LOW", "MEDIUM", "HIGH", "URGENT"]),
+  dueAt: z.string().datetime().optional()
+})
+
+export type TodoInput = z.infer<typeof todoSchema>
+```
+
+#### Frontend Form:
+```tsx
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { todoSchema, type TodoInput } from "@/shared/types"
+
+export function TodoForm() {
+  const form = useForm<TodoInput>({
+    resolver: zodResolver(todoSchema),
+    defaultValues: {
+      status: "TODO",
+      priority: "MEDIUM"
+    }
+  })
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        {/* Form fields */}
+      </form>
+    </Form>
+  )
+}
+```
+
+#### Backend Validation:
+```typescript
+import { z } from "zod"
+import { todoSchema } from "@/shared/types"
+
+app.post("/todos", async (c) => {
+  try {
+    const body = await c.req.json()
+    const validatedData = todoSchema.parse(body)
+    
+    // Process validated data
+    return c.json({ success: true, data: result })
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return c.json({ 
+        success: false, 
+        message: "Data tidak valid", 
+        errors: error.errors 
+      }, 400)
+    }
+    throw error
+  }
+})
+```
+
+## Aturan Tambahan:
+
+1. **Jangan gunakan library UI lain** selain shadcn UI
+2. **Jangan gunakan library validasi lain** selain Zod
+3. **Gunakan TypeScript strict mode** untuk semua file
+4. **Export types dari Zod schema** untuk digunakan di frontend dan backend
+5. **Gunakan shared types** dari folder `shared/src/types/` untuk konsistensi
+6. **Validasi di kedua sisi** - frontend untuk UX, backend untuk security
+7. **Gunakan error handling yang proper** untuk Zod validation errors
+
+## File yang relevan:
+- [client/src/components/ui/](mdc:client/src/components/ui/) - Komponen shadcn UI
+- [shared/src/types/](mdc:shared/src/types/) - Shared types dan Zod schemas
+- [server/src/routes/](mdc:server/src/routes/) - Backend routes dengan Zod validation
