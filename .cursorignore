@@ -1,0 +1,17 @@
+# Output & deps
+dist/
+build/
+out/
+node_modules/
+.venv/
+venv/
+
+# Cache & logs
+.cache/
+*.log
+coverage/
+.DS_Store
+
+# Env & cred
+.env
+.env.*

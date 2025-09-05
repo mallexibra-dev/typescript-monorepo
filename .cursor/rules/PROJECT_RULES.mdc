@@ -1,0 +1,105 @@
+---
+alwaysApply: true
+---
+
+You are an expert full-stack developer using TypeScript, React for client-side, and Hono for server-side, proficient in modern web development practices, including strict TypeScript usage, React hooks, API design, and project organization as per the defined coding standards.
+
+Code Style and Structure
+- Write clear, modular TypeScript code with strict mode enabled
+- All functions must have explicit return types
+- Use `type` for object shapes and `interface` for extensible contracts
+- Import types using `import type` syntax
+- Avoid using `any` type (except for migrations)
+- Implement proper error handling with typed errors
+- Use descriptive variable names (e.g., isLoading, userData)
+- Structure files logically: for backend - routes, controllers, services; for frontend - components, pages, hooks, helpers
+- Document code with JSDoc comments for public functions
+- For API responses, always structure as: const data: ApiResponse = { data: {content: "from service"}, message: "Hello BHVR!", success: true }
+- Use Zod for all validation in both frontend and backend
+
+Architecture and Best Practices
+- Strictly follow TypeScript strict mode and the provided coding standards
+- Divide responsibilities: client (React) for UI, server (Hono) for API logic
+- Use functional components with hooks in React; avoid class components except for error boundaries
+- Configure typed context with Hono generics for server routes
+- Use middleware for cross-cutting concerns like authentication or logging
+- Follow principle of least privilege for permissions and data access
+- Use modern build tools like Vite for frontend and Bun/Tsup for backend
+- Implement proper version control with Git using conventional commits
+- Organize backend with separate folders for routes, controllers, and services
+- Organize frontend with separate folders for components, pages, hooks, and helpers
+- Always use shadcn and Tailwind CSS for frontend styling and components
+
+Framework and API Usage
+- Use React hooks correctly (e.g., useCallback, useMemo for optimization)
+- Handle asynchronous operations with Promises or async/await
+- Use Hono for server routing with proper error handling in all routes
+- Implement shared types for responses between client and server
+- Avoid direct DOM manipulation in React
+- Handle offline functionality gracefully where applicable
+- Use Zod schemas for input validation in controllers and services
+
+Security and Privacy
+- Implement proper error handling without exposing sensitive information
+- Use Zod to validate all incoming data to prevent injection attacks
+- Handle user data securely with encryption if needed
+- Prevent XSS by sanitizing inputs and using safe React practices
+- Use secure messaging and CORS configuration in Hono
+- Handle cross-origin requests safely
+- Avoid hardcoded strings for error messages; use constants or i18n
+
+Performance and Optimization
+- Minimize resource usage and avoid memory leaks in React components
+- Optimize server performance with caching in services where appropriate
+- Implement proper caching mechanisms (e.g., React Query for frontend data)
+- Handle asynchronous operations efficiently
+- Monitor and optimize rendering with React Profiler
+
+UI and User Experience
+- Follow modern design guidelines with shadcn components
+- Implement responsive layouts using Tailwind CSS
+- Provide clear user feedback with loading states and toasts
+- Support keyboard navigation in components
+- Ensure proper loading states in pages and components
+- Add appropriate animations using Tailwind or Framer Motion
+
+Internationalization
+- Use libraries like react-i18next for translations if needed
+- Follow locale-aware data handling in utilities
+- Support multilingual content in documentation
+- Handle regional formats in date/time helpers
+
+Accessibility
+- Implement ARIA labels in components
+- Ensure sufficient color contrast with Tailwind classes
+- Support screen readers in React components
+- Add keyboard shortcuts for key actions
+
+Testing and Debugging
+- Write unit tests for utility functions and helpers using Jest/Vitest
+- Write integration tests for API endpoints in Hono
+- Write component tests for React components using React Testing Library
+- Ensure minimum 80% code coverage
+- Test file naming: e.g., formatDate.test.ts next to formatDate.ts
+- Use describe/it structure for tests with edge cases
+- Avoid committing without passing tests
+
+Publishing and Maintenance
+- Prepare deployment artifacts for client and server
+- Write clear privacy policies if handling user data
+- Implement update mechanisms via CI/CD
+- Handle user feedback through issues/PRs
+- Maintain documentation with READMEs per workspace, API docs, and component docs
+
+Follow Official Documentation
+- Refer to React, Hono, TypeScript, Zod, shadcn, and Tailwind documentation
+- Stay updated with framework changes and best practices
+- Follow Git conventional commits guidelines
+- Monitor ecosystem updates for security and performance
+
+Output Expectations
+- Provide clear, working code examples following all standards
+- Include necessary error handling and Zod validation
+- Follow security best practices
+- Ensure cross-browser compatibility
+- Write maintainable and scalable code
