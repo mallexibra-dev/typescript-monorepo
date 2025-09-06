@@ -15,7 +15,7 @@ export default function App() {
       setIsLoading(true)
       const response = await api.get("/todos")
       if (response.data.success) {
-        setTodos(response.data.data || [])
+        setTodos(response.data.data.todos || [])
       }
     } catch (error) {
       console.error("Error fetching todos:", error)
@@ -40,6 +40,7 @@ export default function App() {
   // Update todo
   const handleUpdateTodo = async (id: string, data: Partial<Todo>): Promise<void> => {
     try {
+      console.log(data)
       const response = await api.put(`/todos/${id}`, data)
       if (response.data.success) {
         await fetchTodos() // Refresh todos list
@@ -69,12 +70,7 @@ export default function App() {
   }, [])
 
   return (
-    <div className="p-4">
-      <nav className="flex gap-4 mb-4">
-        <Link to="/">Home</Link>
-        <Link to="/add">Add Todo</Link>
-      </nav>
-
+    <div className="p-4 max-w-10/12 mx-auto">
       <Routes>
         <Route 
           path="/" 

@@ -19,7 +19,7 @@ interface TodoListProps {
 }
 
 export function TodoList({ 
-  todos, 
+  todos = [], 
   isLoading = false, 
   onCreateTodo, 
   onUpdateTodo, 
@@ -30,7 +30,6 @@ export function TodoList({
   const [priorityFilter, setPriorityFilter] = useState<TodoPriorityType | "ALL">("ALL")
   const [isFormOpen, setIsFormOpen] = useState(false)
 
-  // Filter todos berdasarkan search dan filter
   const filteredTodos = todos.filter(todo => {
     const matchesSearch = todo.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          (todo.description && todo.description.toLowerCase().includes(searchTerm.toLowerCase()))
@@ -85,6 +84,7 @@ export function TodoList({
 
   return (
     <div className="space-y-6">
+      
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>

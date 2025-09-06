@@ -50,6 +50,7 @@ export function TodoItem({ todo, onUpdate, onDelete }: TodoItemProps) {
   const [isEditOpen, setIsEditOpen] = useState(false)
   const [isDeleteOpen, setIsDeleteOpen] = useState(false)
   const [isUpdating, setIsUpdating] = useState(false)
+  const [isEdit, setIsEdit] = useState(false)
 
   const getStatusIcon = (status: TodoStatusType) => {
     switch (status) {
@@ -128,10 +129,12 @@ export function TodoItem({ todo, onUpdate, onDelete }: TodoItemProps) {
       }
       await onUpdate(todo.id, payload)
       setIsEditOpen(false)
+      setIsEdit(false)
     } catch (error) {
       console.error("Error updating todo:", error)
     } finally {
       setIsUpdating(false)
+      setIsEdit(false)
     }
   }
 
@@ -160,16 +163,20 @@ export function TodoItem({ todo, onUpdate, onDelete }: TodoItemProps) {
             />
             
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-2">
+              <div className="mb-2">
                 <h3 className={`font-medium text-sm ${
                   todo.status === "DONE" ? "line-through text-gray-500" : "text-gray-900"
                 }`}>
                   {todo.title}
                 </h3>
-                <Badge className={`text-xs ${getPriorityColor(todo.priority)}`}>
-                  {getPriorityIcon(todo.priority)} {todo.priority}
-                </Badge>
               </div>
+              
+              {todo.dueAt && (
+                <div className="flex items-center gap-1 text-xs text-gray-500 mb-2">
+                  <Calendar className="h-3 w-3" />
+                  <span>{formatDate(todo.dueAt)}</span>
+                </div>
+              )}
               
               {todo.description && (
                 <p className={`text-xs text-gray-600 mb-2 ${
@@ -180,16 +187,12 @@ export function TodoItem({ todo, onUpdate, onDelete }: TodoItemProps) {
               )}
               
               <div className="flex items-center gap-2 mb-2">
-                <Badge className={`text-xs ${getStatusColor(todo.status)}`}>
+                <Badge className={`text-xs ${getStatusColor(todo.status)} space-x-1 hover:${getStatusColor(todo.status).split(' ')[0]} border-transparent`}>
                   {getStatusIcon(todo.status)} {todo.status.replace('_', ' ')}
                 </Badge>
-                
-                {todo.dueAt && (
-                  <div className="flex items-center gap-1 text-xs text-gray-500">
-                    <Calendar className="h-3 w-3" />
-                    <span>{formatDate(todo.dueAt)}</span>
-                  </div>
-                )}
+                <Badge className={`text-xs ${getPriorityColor(todo.priority)} space-x-1 hover:${getPriorityColor(todo.priority).split(' ')[0]} border-transparent`}>
+                  {getPriorityIcon(todo.priority)} {todo.priority}
+                </Badge>
               </div>
               
               <div className="text-xs text-gray-400">
@@ -211,7 +214,10 @@ export function TodoItem({ todo, onUpdate, onDelete }: TodoItemProps) {
               <DropdownMenuContent align="end">
                 <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
                   <DialogTrigger asChild>
-                    <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                    <DropdownMenuItem onSelect={(e) => {
+                      e.preventDefault()
+                      setIsEdit(true)
+                    }}>
                       <Edit className="h-4 w-4 mr-2" />
                       Edit
                     </DropdownMenuItem>
@@ -222,6 +228,7 @@ export function TodoItem({ todo, onUpdate, onDelete }: TodoItemProps) {
                     </DialogHeader>
                     <TodoForm 
                       onSubmit={handleEdit}
+                      isEdit={isEdit}
                       initialData={{
                         title: todo.title,
                         description: todo.description || "",

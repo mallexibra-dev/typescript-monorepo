@@ -1,8 +1,6 @@
 ---
-alwaysApply: true
-description: Aturan untuk menggunakan shadcn UI dan Zod validation
+alwaysApply: false
 ---
-
 # Aturan shadcn UI dan Zod Validation
 
 ## Komponen UI - Gunakan shadcn UI

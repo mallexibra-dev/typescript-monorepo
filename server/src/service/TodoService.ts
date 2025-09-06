@@ -86,8 +86,6 @@ export class TodoService {
     const [todos, total] = await Promise.all([
       this.prisma.todo.findMany({
         where,
-        skip,
-        take: limit,
         orderBy: [
           { priority: 'desc' },
           { dueAt: 'asc' },

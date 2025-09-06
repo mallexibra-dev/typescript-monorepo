@@ -12,9 +12,10 @@ interface TodoFormProps {
   onSubmit: (data: CreateTodoFormInput) => Promise<void>
   isLoading?: boolean
   initialData?: Partial<CreateTodoFormInput>
+  isEdit?: boolean
 }
 
-export function TodoForm({ onSubmit, isLoading = false, initialData }: TodoFormProps) {
+export function TodoForm({ onSubmit, isLoading = false, initialData, isEdit = false }: TodoFormProps) {
   const form = useForm<CreateTodoFormInput>({
     resolver: zodResolver(createTodoFormSchema),
     defaultValues: {
@@ -30,7 +31,7 @@ export function TodoForm({ onSubmit, isLoading = false, initialData }: TodoFormP
 
   const handleSubmit = async (data: CreateTodoFormInput) => {
     try {
-      await onSubmit(data)
+        await onSubmit(data)
       form.reset()
     } catch (error) {
       console.error("Error creating todo:", error)
@@ -125,7 +126,7 @@ export function TodoForm({ onSubmit, isLoading = false, initialData }: TodoFormP
             />
             
             <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Menyimpan..." : "Tambah Todo"}
+              {isLoading ? "Menyimpan..." : isEdit ? "Simpan" : "Tambah Todo"}
             </Button>
           </form>
         </Form>
