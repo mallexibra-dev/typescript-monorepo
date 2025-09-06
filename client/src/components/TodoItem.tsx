@@ -34,11 +34,10 @@ import {
   Clock,
   CheckCircle2,
   Circle,
-  AlertCircle,
   XCircle
 } from "lucide-react"
 import { TodoForm } from "./TodoForm"
-import type { Todo, TodoStatusType, TodoPriorityType, UpdateTodoInput } from "shared"
+import type { Todo, TodoStatusType, TodoPriorityType, UpdateTodoInput, CreateTodoFormInput } from "shared"
 
 interface TodoItemProps {
   todo: Todo
@@ -138,6 +137,15 @@ export function TodoItem({ todo, onUpdate, onDelete }: TodoItemProps) {
     }
   }
 
+  const handleFormSubmit = async (data: CreateTodoFormInput) => {
+    const updateData: UpdateTodoInput = {
+      ...data,
+      startAt: data.startAt ? new Date(data.startAt) : null,
+      dueAt: data.dueAt ? new Date(data.dueAt) : null,
+    }
+    await handleEdit(updateData)
+  }
+
   const handleDelete = async () => {
     setIsUpdating(true)
     try {
@@ -187,10 +195,10 @@ export function TodoItem({ todo, onUpdate, onDelete }: TodoItemProps) {
               )}
               
               <div className="flex items-center gap-2 mb-2">
-                <Badge className={`text-xs ${getStatusColor(todo.status)} space-x-1 hover:${getStatusColor(todo.status).split(' ')[0]} border-transparent`}>
+                <Badge className={`text-[10px] ${getStatusColor(todo.status)} space-x-1 hover:${getStatusColor(todo.status).split(' ')[0]} border-transparent`}>
                   {getStatusIcon(todo.status)} {todo.status.replace('_', ' ')}
                 </Badge>
-                <Badge className={`text-xs ${getPriorityColor(todo.priority)} space-x-1 hover:${getPriorityColor(todo.priority).split(' ')[0]} border-transparent`}>
+                <Badge className={`text-[10px] ${getPriorityColor(todo.priority)} space-x-1 hover:${getPriorityColor(todo.priority).split(' ')[0]} border-transparent`}>
                   {getPriorityIcon(todo.priority)} {todo.priority}
                 </Badge>
               </div>
@@ -227,7 +235,7 @@ export function TodoItem({ todo, onUpdate, onDelete }: TodoItemProps) {
                       <DialogTitle>Edit Todo</DialogTitle>
                     </DialogHeader>
                     <TodoForm 
-                      onSubmit={handleEdit}
+                      onSubmit={handleFormSubmit}
                       isEdit={isEdit}
                       initialData={{
                         title: todo.title,

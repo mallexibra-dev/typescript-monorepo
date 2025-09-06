@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react"
-import { Routes, Route, Link } from "react-router-dom"
+import { Routes, Route } from "react-router-dom"
 import { TodoList } from "./components/TodoList"
 import { TodoForm } from "./components/TodoForm"
 import { api } from "./lib/axios"
-import type { Todo, CreateTodoInput, CreateTodoFormInput } from "shared"
+import type { Todo, CreateTodoFormInput } from "shared"
 
 export default function App() {
   const [todos, setTodos] = useState<Todo[]>([])
